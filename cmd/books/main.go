@@ -1,20 +1,22 @@
 package main
 
 import (
-	"CRUD-books/internal/transport/rest"
+	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
-)
-
-const (
-	Addr = ":8080"
 )
 
 func main() {
-	mux := rest.GetMux()
+	r := gin.Default()
 
-	log.Printf("Run server http://localhost%v", Addr)
-	err := http.ListenAndServe(Addr, mux)
+	r.GET("/book", booksHandler)
+	r.GET("/book", bookHandler)
+	r.POST("/book", createHandler)
+	r.PUT("/book", updateHandler)
+	r.DELETE("/book", deleteHandler)
+
+	log.Println("Start server to http://localhost:8080")
+
+	err := r.Run()
 	if err != nil {
 		log.Fatal(err)
 	}
