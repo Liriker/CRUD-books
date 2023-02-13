@@ -9,16 +9,16 @@ type Book struct {
 	PublishDate int64  `json:"publish-date"`
 }
 
-func New(id int, name, author string, publishDate int64) *Book {
-	return &Book{
-		Id:          id,
-		Name:        name,
-		Author:      author,
-		PublishDate: publishDate,
-	}
-}
+//func New(id int, name, author string, publishDate int64) *Book {
+//	return &Book{
+//		Id:          id,
+//		Name:        name,
+//		Author:      author,
+//		PublishDate: publishDate,
+//	}
+//}
 
-func NewEmpty() *Book {
+func New() *Book {
 	return &Book{}
 }
 

@@ -55,10 +55,18 @@ func (r *Repository) Get(id int) *sql.Row {
 func (r *Repository) Create(id int, name, author string, publishDate time.Time) (sql.Result, error) {
 	stmt := `
 			INSERT INTO book (id, name, author, publish_date)
-			VALUES (NULL, ?, ?, ?);
+			VALUES (?, ?, ?, ?);
 			`
 
-	result, err := r.db.Exec(stmt, id, name, author, publishDate)
+	nullId := sql.NullInt32{
+		Int32: int32(id),
+		Valid: true,
+	}
+	if id <= 0 {
+		nullId.Valid = false
+	}
+
+	result, err := r.db.Exec(stmt, nullId, name, author, publishDate)
 	if err != nil {
 		return nil, err
 	}
@@ -80,6 +88,6 @@ func (r *Repository) Delete(id int) (sql.Result, error) {
 	return result, err
 }
 
-func (r *Repository) Update(row sql.Row) {
-	//TODO
+func (r *Repository) Update() {
+	//TODO update Row
 }
