@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
 )
@@ -10,8 +11,9 @@ type Repository struct {
 	db *sql.DB
 }
 
-func New() (*Repository, error) {
-	db, err := sql.Open("mysql", "root:21012001Ilya@/crud-book?parseTime=true")
+func New(user, password string) (*Repository, error) {
+	dataSourceName := fmt.Sprintf("%v:%v@/crud-books?parseTime=true", user, password)
+	db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +35,7 @@ func (r *Repository) Close() error {
 
 func (r *Repository) All() (*sql.Rows, error) {
 
-	stmt := `SELECT id, name, author, publish_date FROM book;`
+	stmt := `SELECT id, name, author, publish_date FROM books;`
 
 	result, err := r.db.Query(stmt)
 	if err != nil {
@@ -44,7 +46,7 @@ func (r *Repository) All() (*sql.Rows, error) {
 
 func (r *Repository) Get(id int) *sql.Row {
 	stmt := `
-			SELECT id, name, author, publish_date FROM book
+			SELECT id, name, author, publish_date FROM books
 			WHERE id = ?;
 			`
 
@@ -54,7 +56,7 @@ func (r *Repository) Get(id int) *sql.Row {
 
 func (r *Repository) Create(id int, name, author string, publishDate time.Time) (sql.Result, error) {
 	stmt := `
-			INSERT INTO book (id, name, author, publish_date)
+			INSERT INTO books (id, name, author, publish_date)
 			VALUES (?, ?, ?, ?);
 			`
 
@@ -76,7 +78,7 @@ func (r *Repository) Create(id int, name, author string, publishDate time.Time) 
 
 func (r *Repository) Delete(id int) (sql.Result, error) {
 	stmt := `
-			DELETE FROM book
+			DELETE FROM books
 			WHERE id = ?;
 			`
 

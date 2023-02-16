@@ -1,12 +1,12 @@
 package book
 
-import "encoding/json"
+import "time"
 
 type Book struct {
-	Id          int    `json:"id,omitempty"`
-	Name        string `json:"name"`
-	Author      string `json:"author"`
-	PublishDate int64  `json:"publish-date"`
+	Id          int       `json:"id,omitempty"`
+	Name        string    `json:"name"`
+	Author      string    `json:"author"`
+	PublishDate time.Time `json:"publish-date"`
 }
 
 //func New(id int, name, author string, publishDate int64) *Book {
@@ -24,9 +24,4 @@ func New() *Book {
 
 func (b *Book) ID() int {
 	return b.Id
-}
-
-func (b *Book) UnmarshalJSON(data []byte) error {
-	err := json.Unmarshal(data, b)
-	return err
 }

@@ -1,45 +1,30 @@
 package endpoint
 
-import (
-	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
-)
-
-type book interface {
-	NewEmpty() *book.Book
-	ID() int
-	UnmarshalJSON([]byte) error
-}
+import "github.com/gin-gonic/gin"
 
 type Endpoint struct {
-	books []book
+	service Service
+	engine  *gin.Engine
 }
 
-func New() *Endpoint {
-	return &Endpoint{}
-}
-
-func (ep *Endpoint) Books(ctx *gin.Context) {
-	writer := ctx.Writer
-
-	req, err := json.Marshal(ep.books)
-	if err != nil {
-		log.Println(err)
-		writer.WriteHeader(http.StatusInternalServerError)
-	}
-
-	_, err = writer.Write(req)
-	if err != nil {
-		log.Println(err)
-		writer.WriteHeader(http.StatusInternalServerError)
+func New(eng *gin.Engine, service Service) *Endpoint {
+	return &Endpoint{
+		engine:  eng,
+		service: service,
 	}
 }
 
-func (ep *Endpoint) Book(ctx *gin.Context) {
-	writer := ctx.Writer
+func (e *Endpoint) Start() error {
+	e.engine.GET("/book", e.BookHandler)
+	e.engine.GET("/books", e.BooksHandler)
+	e.engine.POST("/book", e.CreateHandler)
+	e.engine.PUT("/book", e.UpdateHandler)
+	e.engine.DELETE("/book", e.DeleteHandler)
 
-	body := ctx.Request.Body
+	err := e.engine.Run()
+	if err != nil {
+		return err
+	}
 
+	return nil
 }

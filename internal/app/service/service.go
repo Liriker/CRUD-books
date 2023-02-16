@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"time"
 )
 
@@ -56,22 +57,22 @@ func (s *Service) Books() ([]byte, error) {
 }
 
 func (s *Service) Book(data []byte) ([]byte, error) {
-	book := *book.New()
+	var b book.Book
 
-	err := json.Unmarshal(data, &book)
+	err := json.Unmarshal(data, &b)
 	if err != nil {
 		return nil, err
 	}
 
-	id := book.ID()
+	id := b.ID()
 
 	row := s.db.Get(id)
-	err = row.Scan(&book.Id, &book.Name, &book.Author, &book.PublishDate)
+	err = row.Scan(&b.Id, &b.Name, &b.Author, &b.PublishDate)
 	if err != nil {
 		return nil, err
 	}
 
-	body, err := json.Marshal(book)
+	body, err := json.Marshal(b)
 	if err != nil {
 		return nil, err
 	}
@@ -80,36 +81,29 @@ func (s *Service) Book(data []byte) ([]byte, error) {
 }
 
 func (s *Service) CreateBook(data []byte) ([]byte, error) {
-	book := book.New()
+	var b book.Book
 
-	err := json.Unmarshal(data, book)
+	err := json.Unmarshal(data, &b)
 	if err != nil {
 		return nil, err
 	}
 
-	date := time.Unix(book.PublishDate, 0)
+	_, err = s.db.Create(b.Id, b.Name, b.Author, b.PublishDate)
 
-	result, err := s.db.Create(book.Id, book.Name, book.Author, date)
-
-	insertId, err := result.LastInsertId()
-	if err != nil {
-		return nil, err
-	}
-
-	body := fmt.Sprintf("Book #%v was created\n", insertId)
+	body := fmt.Sprintf("Book #%v was created\n", b.ID())
 
 	return []byte(body), nil
 }
 
 func (s *Service) DeleteBook(data []byte) ([]byte, error) {
-	book := book.New()
+	var b book.Book
 
-	err := json.Unmarshal(data, book)
+	err := json.Unmarshal(data, &b)
 	if err != nil {
 		return nil, err
 	}
 
-	id := book.ID()
+	id := b.ID()
 
 	result, err := s.db.Delete(id)
 	if err != nil {
@@ -126,18 +120,18 @@ func (s *Service) DeleteBook(data []byte) ([]byte, error) {
 }
 
 func (s *Service) UpdateBook(data []byte) ([]byte, error) {
-	book := book.New()
+	var b book.Book
 
-	err := json.Unmarshal(data, book)
+	err := json.Unmarshal(data, &b)
 	if err != nil {
 		return nil, err
 	}
 
-	id := book.ID()
+	id := b.ID()
 
-	// TODO update book
+	// TODO update b
 
-	body := fmt.Sprintf("Book #%v was updated", id)
+	body := fmt.Sprintf("Book #%v must be updated, but i can't do it now(", id)
 
 	return []byte(body), nil
 }
