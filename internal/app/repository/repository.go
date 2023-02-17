@@ -87,9 +87,22 @@ func (r *Repository) Delete(id int) (sql.Result, error) {
 		return nil, err
 	}
 
-	return result, err
+	return result, nil
 }
 
-func (r *Repository) Update() {
-	//TODO update Row
+func (r *Repository) Update(id int, name, author string, publishDate time.Time) (sql.Result, error) {
+	stmt := `
+			UPDATE books
+			SET name = ?,
+				author = ?,
+				publish_date = ?
+			WHERE id = ?;
+			`
+
+	result, err := r.db.Exec(stmt, name, author, publishDate, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }

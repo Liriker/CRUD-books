@@ -14,7 +14,7 @@ type repository interface {
 	Get(id int) *sql.Row
 	Create(id int, name, author string, publishDate time.Time) (sql.Result, error)
 	Delete(id int) (sql.Result, error)
-	Update()
+	Update(id int, name, author string, publishDate time.Time) (sql.Result, error)
 }
 
 type Service struct {
@@ -69,6 +69,9 @@ func (s *Service) Book(data []byte) ([]byte, error) {
 	row := s.db.Get(id)
 	err = row.Scan(&b.Id, &b.Name, &b.Author, &b.PublishDate)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return []byte("There is no book with this ID"), nil
+		}
 		return nil, err
 	}
 
@@ -120,18 +123,32 @@ func (s *Service) DeleteBook(data []byte) ([]byte, error) {
 }
 
 func (s *Service) UpdateBook(data []byte) ([]byte, error) {
+	var newBook book.Book
 	var b book.Book
 
-	err := json.Unmarshal(data, &b)
+	err := json.Unmarshal(data, &newBook)
 	if err != nil {
 		return nil, err
 	}
 
-	id := b.ID()
+	id := newBook.ID()
 
-	// TODO update b
+	row := s.db.Get(id)
+	err = row.Scan(&b.Id, &b.Name, &b.Author, &b.PublishDate)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return []byte("There is no book with this ID"), nil
+		}
+		return nil, err
+	}
+	b.UpdateBook(newBook)
 
-	body := fmt.Sprintf("Book #%v must be updated, but i can't do it now(", id)
+	_, err = s.db.Update(b.Id, b.Name, b.Author, b.PublishDate)
+	if err != nil {
+		return nil, err
+	}
+
+	body := fmt.Sprintf("Book #%v was updated", id)
 
 	return []byte(body), nil
 }

@@ -7,8 +7,8 @@ type Config struct {
 
 func New() *Config {
 	return &Config{
-		User:     "root",
-		Password: "21012001Ilya",
+		User:     "admin",
+		Password: "pass",
 	}
 	//	TODO normal config
 }

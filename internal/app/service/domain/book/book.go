@@ -9,19 +9,22 @@ type Book struct {
 	PublishDate time.Time `json:"publish-date"`
 }
 
-//func New(id int, name, author string, publishDate int64) *Book {
-//	return &Book{
-//		Id:          id,
-//		Name:        name,
-//		Author:      author,
-//		PublishDate: publishDate,
-//	}
-//}
-
 func New() *Book {
 	return &Book{}
 }
 
 func (b *Book) ID() int {
 	return b.Id
+}
+
+func (b *Book) UpdateBook(newBook Book) {
+	if newBook.Name != "" {
+		b.Name = newBook.Name
+	}
+	if newBook.Author != "" {
+		b.Author = newBook.Author
+	}
+	if !newBook.PublishDate.IsZero() {
+		b.PublishDate = newBook.PublishDate
+	}
 }
