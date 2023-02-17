@@ -37,11 +37,11 @@ func (s *Service) Books() ([]byte, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		book := book.New()
+		b := book.New()
 
-		err = rows.Scan(&book.Id, &book.Name, &book.Author, &book.PublishDate)
+		err = rows.Scan(&b.Id, &b.Name, &b.Author, &b.PublishDate)
 
-		arr = append(arr, book)
+		arr = append(arr, b)
 	}
 	err = rows.Err()
 	if err != nil {
