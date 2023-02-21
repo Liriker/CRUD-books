@@ -9,10 +9,13 @@ import (
 	"log"
 )
 
-func Start() error {
-	conf := config.New()
+func Start(confPath, confFile string) error {
+	conf, err := config.New(confPath, confFile)
+	if err != nil {
+		return err
+	}
 
-	bd, err := repository.New(conf.User, conf.Password)
+	bd, err := repository.New(conf.UserAndPassword())
 	if err != nil {
 		return err
 	}
@@ -23,11 +26,11 @@ func Start() error {
 
 	ep := endpoint.New(engine, serv)
 
-	err = ep.Start()
+	log.Printf("start host http://%v%v\n", conf.Host(), conf.Port())
+	err = ep.Start(conf.Port())
 	if err != nil {
 		return err
 	}
-	log.Println("start host http://localhost:8080")
 
 	return nil
 }

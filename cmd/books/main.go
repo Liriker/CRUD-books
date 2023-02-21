@@ -5,8 +5,13 @@ import (
 	"log"
 )
 
+const (
+	ConfPath = "./configs"
+	ConfFile = "app"
+)
+
 func main() {
-	err := app.Start()
+	err := app.Start(ConfPath, ConfFile)
 	if err != nil {
 		log.Println(err)
 	}

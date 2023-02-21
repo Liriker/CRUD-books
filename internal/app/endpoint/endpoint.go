@@ -14,14 +14,14 @@ func New(eng *gin.Engine, service Service) *Endpoint {
 	}
 }
 
-func (e *Endpoint) Start() error {
+func (e *Endpoint) Start(addr string) error {
 	e.engine.GET("/book", e.BookHandler)
 	e.engine.GET("/books", e.BooksHandler)
 	e.engine.POST("/book", e.CreateHandler)
 	e.engine.PUT("/book", e.UpdateHandler)
 	e.engine.DELETE("/book", e.DeleteHandler)
 
-	err := e.engine.Run()
+	err := e.engine.Run(addr)
 	if err != nil {
 		return err
 	}
