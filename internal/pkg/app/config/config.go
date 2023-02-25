@@ -28,8 +28,12 @@ func New(path, filename string) (*Config, error) {
 	}, nil
 }
 
-func (c *Config) UserAndPassword() (string, string) {
-	return c.mySql.User(), c.mySql.Password()
+func (c *Config) User() string {
+	return c.mySql.User()
+}
+
+func (c *Config) Password() string {
+	return c.mySql.Password()
 }
 
 func (c *Config) Port() string {

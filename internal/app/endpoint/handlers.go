@@ -2,7 +2,6 @@ package endpoint
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 )
 
@@ -15,55 +14,91 @@ type Service interface {
 }
 
 func (e *Endpoint) BooksHandler(ctx *gin.Context) {
+	logger := e.log.With().
+		Str("handler", "books").
+		Logger()
+	logger.Debug().Str("status", "start")
+
+	logger.Trace().Msg("get writer")
 	writer := ctx.Writer
 
+	logger.Trace().Msg("get books array")
 	books, err := e.service.Books()
 	if err != nil {
-		log.Println(err)
-		writer.WriteHeader(http.StatusInternalServerError)
+		logger.Warn().
+			Str("status", "failed").
+			Err(err)
+		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
+	logger.Trace().Msg("write books array")
 	_, err = writer.Write(books)
 	if err != nil {
+		logger.Error().
+			Str("status", "failed").
+			Err(err)
 		writer.WriteHeader(http.StatusInternalServerError)
-		log.Println(err)
 		return
 	}
 }
 
 func (e *Endpoint) BookHandler(ctx *gin.Context) {
-	response, err := e.changeGetData(ctx, e.service.Book)
+	logger := e.log.With().
+		Str("handler", "book").
+		Logger()
+	logger.Debug().Str("status", "start")
+
+	response, err := e.changeGetData(ctx, e.service.Book, logger)
 	if err != nil {
 		ctx.Writer.WriteHeader(response)
-		log.Println(err)
 		return
 	}
+
+	logger.Debug().Str("status", "done")
 }
 
 func (e *Endpoint) CreateHandler(ctx *gin.Context) {
-	response, err := e.changeGetData(ctx, e.service.CreateBook)
+	logger := e.log.With().
+		Str("handler", "create").
+		Logger()
+	logger.Debug().Str("status", "start")
+
+	response, err := e.changeGetData(ctx, e.service.CreateBook, logger)
 	if err != nil {
 		ctx.Writer.WriteHeader(response)
-		log.Println(err)
 		return
 	}
+
+	logger.Debug().Str("status", "done")
 }
 
 func (e *Endpoint) DeleteHandler(ctx *gin.Context) {
-	response, err := e.changeGetData(ctx, e.service.DeleteBook)
+	logger := e.log.With().
+		Str("handler", "delete").
+		Logger()
+	logger.Debug().Str("status", "start")
+
+	response, err := e.changeGetData(ctx, e.service.DeleteBook, logger)
 	if err != nil {
 		ctx.Writer.WriteHeader(response)
-		log.Println(err)
 		return
 	}
+
+	logger.Debug().Str("status", "done")
 }
 
 func (e *Endpoint) UpdateHandler(ctx *gin.Context) {
-	response, err := e.changeGetData(ctx, e.service.UpdateBook)
+	logger := e.log.With().
+		Str("handler", "update").
+		Logger()
+	logger.Debug().Str("status", "start")
+
+	response, err := e.changeGetData(ctx, e.service.UpdateBook, logger)
 	if err != nil {
 		ctx.Writer.WriteHeader(response)
-		log.Println(err)
 		return
 	}
+
+	logger.Debug().Str("status", "done")
 }
