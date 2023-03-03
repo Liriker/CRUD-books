@@ -40,13 +40,13 @@ func New(user, password string, logOut io.Writer) (*Repository, error) {
 func (r *Repository) Close() error {
 	logger := r.log.With().Str("function", "close").Logger()
 
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	err := r.db.Close()
 	if err != nil {
 		logger.Debug().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		return err
 	}
 
@@ -56,7 +56,7 @@ func (r *Repository) Close() error {
 
 func (r *Repository) All() (*sql.Rows, error) {
 	logger := r.log.With().Str("function", "all").Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	logger.Trace().Msg("initialize query")
 	stmt := `SELECT id, name, author, publish_date FROM books;`
@@ -66,11 +66,11 @@ func (r *Repository) All() (*sql.Rows, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		return nil, err
 	}
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 	return result, nil
 }
 
@@ -79,7 +79,7 @@ func (r *Repository) Get(id int) *sql.Row {
 		Str("function", "Get").
 		Str("id", strconv.Itoa(id)).
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	logger.Trace().Msg("initialize query")
 	stmt := `
@@ -90,7 +90,7 @@ func (r *Repository) Get(id int) *sql.Row {
 	logger.Trace().Msg("get row")
 	result := r.db.QueryRow(stmt, id)
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 	return result
 }
 
@@ -99,7 +99,7 @@ func (r *Repository) Create(id int, name, author string, publishDate time.Time) 
 		Str("function", "Create").
 		Str("id", strconv.Itoa(id)).
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	logger.Trace().Msg("initialize query")
 	stmt := `
@@ -123,7 +123,7 @@ func (r *Repository) Create(id int, name, author string, publishDate time.Time) 
 		return nil, err
 	}
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 	return result, nil
 }
 
@@ -132,7 +132,7 @@ func (r *Repository) Delete(id int) (sql.Result, error) {
 		Str("function", "delete").
 		Str("id", strconv.Itoa(id)).
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	logger.Trace().Msg("initialize query")
 	stmt := `
@@ -145,11 +145,11 @@ func (r *Repository) Delete(id int) (sql.Result, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "fail").
-			Err(err)
+			Err(err).Msg("")
 		return nil, err
 	}
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 	return result, nil
 }
 
@@ -158,7 +158,7 @@ func (r *Repository) Update(id int, name, author string, publishDate time.Time) 
 		Str("function", "update").
 		Str("id", strconv.Itoa(id)).
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	logger.Trace().Msg("initialize query")
 	stmt := `
@@ -174,10 +174,10 @@ func (r *Repository) Update(id int, name, author string, publishDate time.Time) 
 	if err != nil {
 		logger.Warn().
 			Str("status", "fail").
-			Err(err)
+			Err(err).Msg("")
 		return nil, err
 	}
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 	return result, nil
 }

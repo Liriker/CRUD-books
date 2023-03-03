@@ -3,44 +3,52 @@ package config
 import (
 	"CRUD-books/internal/pkg/app/config/db"
 	"CRUD-books/internal/pkg/app/config/server"
+	"github.com/rs/zerolog"
+	"github.com/spf13/viper"
 	"strconv"
 )
 
 type Config struct {
-	server *server.Server `mapstructure:"server"`
-	mySql  *db.DB
+	Server *server.Server `mapstructure:"Server"`
+	MySql  *db.DB         `mapstructure:"Db"`
+	logs   zerolog.Logger
 }
 
-func New(path, filename string) (*Config, error) {
-	serv, err := server.New(path, filename)
-	if err != nil {
+func New(filename, confPath string) (*Config, error) {
+
+	conf := new(Config)
+	viper.AddConfigPath(confPath)
+	viper.SetConfigName(filename)
+
+	if err := viper.ReadInConfig(); err != nil {
 		return nil, err
 	}
 
-	mySql, err := db.New()
-	if err != nil {
+	if err := viper.Unmarshal(&conf); err != nil {
 		return nil, err
 	}
 
-	return &Config{
-		server: serv,
-		mySql:  mySql,
-	}, nil
+	//if conf.MySql.User == "" {
+	//	err := errors.New("have no user in DB config")
+	//	return nil, err
+	//}
+
+	return conf, nil
 }
 
 func (c *Config) User() string {
-	return c.mySql.User()
+	return c.MySql.User
 }
 
 func (c *Config) Password() string {
-	return c.mySql.Password()
+	return c.MySql.Password
 }
 
 func (c *Config) Port() string {
-	port := strconv.FormatInt(int64(c.server.Port), 10)
+	port := strconv.FormatInt(int64(c.Server.Port), 10)
 	return ":" + port
 }
 
 func (c *Config) Host() string {
-	return c.server.Host
+	return c.Server.Host
 }

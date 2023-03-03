@@ -2,8 +2,8 @@ package main
 
 import (
 	"CRUD-books/internal/pkg/app"
+	"CRUD-books/pkg/logs"
 	"github.com/rs/zerolog"
-	"os"
 )
 
 const (
@@ -12,10 +12,13 @@ const (
 )
 
 func main() {
-	logger := zerolog.New(os.Stdout)
+	logs.ParseLogLvl()
 
-	err := app.Start(ConfPath, ConfFile)
+	output := logs.Writer()
+	logger := zerolog.New(output)
+
+	err := app.Start(ConfFile, ConfPath, *output)
 	if err != nil {
-		logger.Fatal().Err(err)
+		logger.Fatal().Err(err).Msg("")
 	}
 }

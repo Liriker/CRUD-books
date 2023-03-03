@@ -19,7 +19,7 @@ func (e *Endpoint) changeGetData(ctx *gin.Context, function func(data []byte) ([
 	if err != nil {
 		logger.Error().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		return http.StatusInternalServerError, err
 	}
 
@@ -28,7 +28,7 @@ func (e *Endpoint) changeGetData(ctx *gin.Context, function func(data []byte) ([
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		return http.StatusBadRequest, err
 	}
 
@@ -37,7 +37,7 @@ func (e *Endpoint) changeGetData(ctx *gin.Context, function func(data []byte) ([
 	if err != nil {
 		logger.Error().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		return http.StatusInternalServerError, err
 	}
 	return 0, nil

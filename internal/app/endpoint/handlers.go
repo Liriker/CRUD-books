@@ -17,7 +17,7 @@ func (e *Endpoint) BooksHandler(ctx *gin.Context) {
 	logger := e.log.With().
 		Str("handler", "books").
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	logger.Trace().Msg("get writer")
 	writer := ctx.Writer
@@ -27,7 +27,7 @@ func (e *Endpoint) BooksHandler(ctx *gin.Context) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -37,7 +37,7 @@ func (e *Endpoint) BooksHandler(ctx *gin.Context) {
 	if err != nil {
 		logger.Error().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -47,7 +47,7 @@ func (e *Endpoint) BookHandler(ctx *gin.Context) {
 	logger := e.log.With().
 		Str("handler", "book").
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	response, err := e.changeGetData(ctx, e.service.Book, logger)
 	if err != nil {
@@ -55,14 +55,14 @@ func (e *Endpoint) BookHandler(ctx *gin.Context) {
 		return
 	}
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 }
 
 func (e *Endpoint) CreateHandler(ctx *gin.Context) {
 	logger := e.log.With().
 		Str("handler", "create").
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	response, err := e.changeGetData(ctx, e.service.CreateBook, logger)
 	if err != nil {
@@ -70,14 +70,14 @@ func (e *Endpoint) CreateHandler(ctx *gin.Context) {
 		return
 	}
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 }
 
 func (e *Endpoint) DeleteHandler(ctx *gin.Context) {
 	logger := e.log.With().
 		Str("handler", "delete").
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	response, err := e.changeGetData(ctx, e.service.DeleteBook, logger)
 	if err != nil {
@@ -85,14 +85,14 @@ func (e *Endpoint) DeleteHandler(ctx *gin.Context) {
 		return
 	}
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 }
 
 func (e *Endpoint) UpdateHandler(ctx *gin.Context) {
 	logger := e.log.With().
 		Str("handler", "update").
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	response, err := e.changeGetData(ctx, e.service.UpdateBook, logger)
 	if err != nil {
@@ -100,5 +100,5 @@ func (e *Endpoint) UpdateHandler(ctx *gin.Context) {
 		return
 	}
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 }

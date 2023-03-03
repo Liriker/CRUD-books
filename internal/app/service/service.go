@@ -41,7 +41,7 @@ func (s *Service) Books() ([]byte, error) {
 	logger := s.log.With().
 		Str("function", "books").
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	var arr []*book.Book
 
@@ -50,7 +50,8 @@ func (s *Service) Books() ([]byte, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).
+			Msg("")
 		return nil, err
 	}
 	defer rows.Close()
@@ -69,7 +70,8 @@ func (s *Service) Books() ([]byte, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).
+			Msg("")
 		return nil, err
 	}
 
@@ -78,11 +80,12 @@ func (s *Service) Books() ([]byte, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).
+			Msg("")
 		return nil, err
 	}
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 	return result, nil
 }
 
@@ -90,7 +93,7 @@ func (s *Service) Book(data []byte) ([]byte, error) {
 	logger := s.log.With().
 		Str("function", "book").
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	var b book.Book
 
@@ -99,7 +102,7 @@ func (s *Service) Book(data []byte) ([]byte, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		return nil, err
 	}
 
@@ -113,7 +116,7 @@ func (s *Service) Book(data []byte) ([]byte, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		if err == sql.ErrNoRows {
 			return []byte("There is no book with that ID"), nil
 		}
@@ -125,11 +128,11 @@ func (s *Service) Book(data []byte) ([]byte, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "filed").
-			Err(err)
+			Err(err).Msg("")
 		return nil, err
 	}
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 	return body, nil
 }
 
@@ -137,7 +140,7 @@ func (s *Service) CreateBook(data []byte) ([]byte, error) {
 	logger := s.log.With().
 		Str("function", "createBook").
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	var b book.Book
 
@@ -146,7 +149,7 @@ func (s *Service) CreateBook(data []byte) ([]byte, error) {
 	if err != nil {
 		log.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		return nil, err
 	}
 
@@ -156,7 +159,7 @@ func (s *Service) CreateBook(data []byte) ([]byte, error) {
 	logger.Trace().Msg("form answer")
 	body := fmt.Sprintf("Book #%v was created\n", b.ID())
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 	return []byte(body), nil
 }
 
@@ -164,7 +167,7 @@ func (s *Service) DeleteBook(data []byte) ([]byte, error) {
 	logger := s.log.With().
 		Str("function", "deleteBook").
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	var b book.Book
 
@@ -173,7 +176,7 @@ func (s *Service) DeleteBook(data []byte) ([]byte, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		return nil, err
 	}
 
@@ -185,7 +188,7 @@ func (s *Service) DeleteBook(data []byte) ([]byte, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		return nil, err
 	}
 
@@ -194,14 +197,14 @@ func (s *Service) DeleteBook(data []byte) ([]byte, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		return nil, err
 	}
 
 	logger.Trace().Msg("form answer")
 	body := fmt.Sprintf("Book #%v was deleted", insertId)
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 	return []byte(body), nil
 }
 
@@ -209,7 +212,7 @@ func (s *Service) UpdateBook(data []byte) ([]byte, error) {
 	logger := s.log.With().
 		Str("function", "updateBook").
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	var newBook book.Book
 	var b book.Book
@@ -219,7 +222,7 @@ func (s *Service) UpdateBook(data []byte) ([]byte, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		return nil, err
 	}
 
@@ -232,7 +235,7 @@ func (s *Service) UpdateBook(data []byte) ([]byte, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		if err == sql.ErrNoRows {
 			return []byte("There is no book with this ID"), nil
 		}
@@ -247,13 +250,13 @@ func (s *Service) UpdateBook(data []byte) ([]byte, error) {
 	if err != nil {
 		logger.Warn().
 			Str("status", "failed").
-			Err(err)
+			Err(err).Msg("")
 		return nil, err
 	}
 
 	logger.Trace().Msg("form answer")
 	body := fmt.Sprintf("Book #%v was updated", id)
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 	return []byte(body), nil
 }

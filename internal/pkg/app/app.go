@@ -7,37 +7,40 @@ import (
 	"CRUD-books/internal/pkg/app/config"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
-	"os"
+	"io"
 )
 
-func Start(confPath, confFile string) error {
-	writer := os.Stdout
+func Start(confName, confPath string, output io.Writer) error {
 
-	logger := zerolog.New(writer).With().
+	logger := zerolog.New(output).With().
 		Str("service", "app").
 		Logger()
-	logger.Debug().Str("status", "start")
+	logger.Debug().Str("status", "start").Msg("")
 
 	logger.Trace().Msg("initialize config")
-	conf, err := config.New(confPath, confFile)
+	conf, err := config.New(confName, confPath)
 	if err != nil {
 		return err
 	}
 
 	logger.Trace().Msg("initialize repository")
-	bd, err := repository.New(conf.User(), conf.Password(), writer)
+	bd, err := repository.New(conf.User(), conf.Password(), output)
+	logger.Info().
+		Str("user", conf.User()).
+		Str("pass", conf.Password()).
+		Msg("")
 	if err != nil {
 		return err
 	}
 
 	logger.Trace().Msg("initialize service")
-	serv := service.New(bd, writer)
+	serv := service.New(bd, output)
 
 	logger.Trace().Msg("initialize engine")
 	engine := gin.Default()
 
 	logger.Trace().Msg("initialize endpoints")
-	ep := endpoint.New(engine, serv, writer)
+	ep := endpoint.New(engine, serv, output)
 
 	logger.Info().Msgf("start host http://%v%v\n", conf.Host(), conf.Port())
 	err = ep.Start(conf.Port())
@@ -45,6 +48,6 @@ func Start(confPath, confFile string) error {
 		return err
 	}
 
-	logger.Debug().Str("status", "done")
+	logger.Debug().Str("status", "done").Msg("")
 	return nil
 }
